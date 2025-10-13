@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "foxundermoon.shell-format"
+        "docker.docker",
+        "ms-azuretools.vscode-docker"
     ]
 }
