@@ -2,9 +2,8 @@ ARG TARGETPLATFORM
 ARG TARGETARCH
 ARG BUILDPLATFORM
 
-FROM ubuntu:22.04
-
-ARG APT_PACKAGES="busybox xfwm4 libgtk-3-0 libblkid1 liblzma5 nano"
+# FROM ubuntu:22.04 #default use zstd for deb
+FROM ubuntu:20.04
 
 LABEL org.opencontainers.image.title="Apt package extractor"
 LABEL org.opencontainers.image.description="Utility image with apps prepared for SBC offline use"
@@ -16,8 +15,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 	LANG=C.UTF-8
 
 # Install required apps at build time so runtime is offline
-RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
-	--mount=type=cache,target=/var/cache/apt,sharing=locked \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	apt-get update \
 	&& apt-get install -y --no-install-recommends \
 	ca-certificates \
@@ -29,10 +27,21 @@ RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
 
 # Download all .deb files for APT_PACKAGES into /pkgs (includes Recommends by default)
 RUN mkdir -p /pkgs
-RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
-	--mount=type=cache,target=/var/cache/apt,sharing=locked \
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	--mount=type=cache,target=/cache/pkgs,sharing=locked \
-	apt-get install -y --download-only -o Dir::Cache::archives=/pkgs $APT_PACKAGES
+	apt-get install -y --reinstall --download-only -o Dir::Cache::archives=/pkgs \
+	busybox \
+	nano zstd xz-utils liblzma5 liblz4-tool gcc-10-base libgcc-s1 libcrypt1 libc6 libncurses5 \
+	firejail \
+	mosquitto mosquitto-clients \
+	avahi-daemon avahi-discover avahi-utils libnss-mdns mdns-scan \
+	nfs-ganesha \
+	rt-tests \
+	mesa-utils
+# xfwm4 \
+# libgtk-3-0  libblkid1  liblzma5 \
+# x11vnc
 
 # RUN apt-get install -y -o Dir::Cache::archives=/pkgs $APT_PACKAGES
 

@@ -28,6 +28,6 @@ docker run --rm -it sbc-apps:arm64 bash
 ```
 
 ```bash
-docker run --rm -v $(pwd)/arm64_out:/out -it sbc-apps:arm64 cp /pkgs/*.deb /out
-docker run --rm -v $(pwd)/armv7_out:/out -it sbc-apps:armv7 cp /pkgs/*.deb /out
+docker run --rm -v $(pwd)/arm64_out:/out -it sbc-apps:arm64 bash -c "cp /pkgs/*.deb /out"
+docker run --rm -v $(pwd)/armv7_out:/out -it sbc-apps:armv7 bash -c "cp /pkgs/*.deb /out"
 ```
