@@ -4,6 +4,7 @@ ARG BUILDPLATFORM
 
 # FROM ubuntu:22.04 #default use zstd for deb
 FROM ubuntu:20.04
+# FROM bookworm-slim
 
 LABEL org.opencontainers.image.title="Apt package extractor"
 LABEL org.opencontainers.image.description="Utility image with apps prepared for SBC offline use"
@@ -32,7 +33,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	--mount=type=cache,target=/cache/pkgs,sharing=locked \
 	apt-get install -y --reinstall --download-only -o Dir::Cache::archives=/pkgs \
 	busybox \
-	nano zstd xz-utils liblzma5 liblz4-tool gcc-10-base libgcc-s1 libcrypt1 libc6 libncurses5 \
+	# gcc-10-base libgcc-s1 libcrypt1 libc6 \
+	zstd xz-utils liblzma5 liblz4-1 lz4 liblz4-tool libgcrypt20 \
+	libncurses5 libtinfo6 libncursesw6 nano \
+	libcap2 libsystemd0 \
 	firejail \
 	mosquitto mosquitto-clients \
 	avahi-daemon avahi-discover avahi-utils libnss-mdns mdns-scan \
